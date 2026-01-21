@@ -19,7 +19,7 @@
       "args": [
         "--source",
         "${workspaceFolder}/packages",
-        "Bicep.McpServer@0.39.290-gd4b28b6ef1"
+        "Bicep.McpServer@0.39.292-g8038cdc5e1"
       ]
     }
   }

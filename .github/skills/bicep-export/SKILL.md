@@ -25,7 +25,7 @@ Strongly prefer the following tools/commands as part of the workflow, instead of
 
 - `get_bicep_best_practices` MCP tool: learn current best practices before refactoring.
 - `get_bicep_file_diagnostics` MCP tool: compile/validate Bicep and address errors/warnings during edits.
-- `get_snapshot` MCP tool: predict deployment output; take “before” and “after” snapshots and compare.
+- `get_deployment_snapshot` MCP tool: predict deployment output; take “before” and “after” snapshots and compare.
 - `az group export ...` CLI command: export the live resource group to bootstrap the initial template.
 - `az deployment group what-if ...` CLI command: run a live diff against Azure using the final `.bicepparam`.
 
@@ -46,9 +46,9 @@ Strongly prefer the following tools/commands as part of the workflow, instead of
 
 ### 2) Capture snapshot file
 
-- Capture a snapshot for the “before” state (initial exported structure + parameters) using the `get_snapshot` MCP tool.
+- Capture a snapshot for the “before” state (initial exported structure + parameters) using the `get_deployment_snapshot` MCP tool.
 - Ensure you pass it all the inputs (subscription id, resource group name) that you have values for.
-- Save the `snapshotContents` value to `exported_raw.snapshot.json`, bearing in mind it is a large file.
+- Save the MCP tool output to `exported_raw.snapshot.json`, bearing in mind it is a large file.
 
 ### 3) Refactor for maintainability
 
@@ -72,9 +72,9 @@ Refactor the exported output into a clean structure:
 
 This provides confidence that the code has been succesfully refactored without altering the outcome of the deployment.
 
-- Capture a new snapshot of the “after” state (refactored modules + parameters) using the `get_snapshot` MCP tool.
+- Capture a new snapshot of the “after” state (refactored modules + parameters) using the `get_deployment_snapshot` MCP tool.
 - Ensure you pass it all the inputs (subscription id, resource group name) that you have values for.
-- Save the `snapshotContents` value to `main.snapshot.json`, bearing in mind it is a large file.
+- Save the MCP tool output to `main.snapshot.json`, bearing in mind it is a large file.
 - Diff the new snapshot against the original snapshot, to ensure that all of the refactors have succesfully preserved semantics.
 - If there are any semantic differences, iterate until snapshots are equivalent (or any differences are explicitly intentional and justified).
 
