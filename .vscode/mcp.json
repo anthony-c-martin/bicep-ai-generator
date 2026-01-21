@@ -1,7 +1,7 @@
 {
   "inputs": [],
   "servers": {
-    "Bicep Generator MCP": {
+    "Bicep Generator": {
       "type": "stdio",
       "command": "dotnet",
       "args": [
@@ -12,6 +12,15 @@
       "env": {
         "AZURE_OPENAI_ENDPOINT": "https://mcp-ai-test.openai.azure.com/"
       }
+    },
+    "Bicep": {
+      "type": "stdio",
+      "command": "dnx",
+      "args": [
+        "--source",
+        "${workspaceFolder}/packages",
+        "Bicep.McpServer@0.39.290-gd4b28b6ef1"
+      ]
     }
   }
 }

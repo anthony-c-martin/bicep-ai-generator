@@ -34,7 +34,9 @@ Strongly prefer the following tools/commands as part of the workflow, instead of
 ### 1) Bootstrap from Live State (Export)
 
 - Run `az group export ...` against the target resource group to get an initial baseline. This will give you a very rough machine-generated output.
-- Use the `--export-format bicep` argument to obtain a `.bicep` file output.
+- Use the `--export-format bicep` and `--output tsv` arguments to obtain a `.bicep` file output.
+- Only pipe stdout, don't use `2>&1` to pipe stderr to file.
+- Put the temporary exported artifact a temp directory, not in the user's workspace.
 - Treat export output as input material only; plan to refactor heavily for readability and long-term maintenance.
 
 ### 2) Refactor for maintainability
