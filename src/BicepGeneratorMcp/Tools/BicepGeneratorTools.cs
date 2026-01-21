@@ -44,7 +44,7 @@ internal class BicepGeneratorTools(
             throw new ArgumentException($"The specified resource type '{resourceType}@{apiVersion}' was not found.", nameof(resourceType));
         }
 
-        var schema = ResourceSchemaGenerator.ToJsonSchemaRecursive(resourceTypeDef.Body.Type);
+        var schema = ResourceSchemaGenerator.ToJsonSchema(resourceTypeDef.Body.Type);
         var serializedSchema = JsonSerializer.Serialize(schema, new JsonSerializerOptions { WriteIndented = true });
 
         var systemPrompt = $@"You are an expert Azure infrastructure architect specializing in creating resource configurations.
