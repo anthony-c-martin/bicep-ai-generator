@@ -1,8 +1,9 @@
 using System.Runtime.CompilerServices;
 using System.Text.Json.Nodes;
 using Azure.Bicep.Types.Concrete;
+using Json.More;
 
-namespace BicepGenerator;
+namespace BicepGeneratorMcp;
 
 public static class ResourceSchemaGenerator
 {
@@ -37,6 +38,7 @@ public static class ResourceSchemaGenerator
                     ["items"] = ToJsonSchemaRecursive(arrayType.ItemType.Type)
                 };
             case ObjectType objectType:
+            {
                 var writableProps = objectType.Properties.Where(x => !x.Value.Flags.HasFlag(ObjectTypePropertyFlags.ReadOnly));
                 var requiredProps = writableProps.Where(x => x.Value.Flags.HasFlag(ObjectTypePropertyFlags.Required));
 
@@ -47,8 +49,26 @@ public static class ResourceSchemaGenerator
                     ["properties"] = new JsonObject(properties),
                     ["required"] = new JsonArray([.. requiredProps.Select(x => JsonValue.Create(x.Key))]),
                 };
+            }
+            case DiscriminatedObjectType discriminatedObjectType:
+            {
+                var writableProps = discriminatedObjectType.BaseProperties.Where(x => !x.Value.Flags.HasFlag(ObjectTypePropertyFlags.ReadOnly));
+                var requiredProps = writableProps.Where(x => x.Value.Flags.HasFlag(ObjectTypePropertyFlags.Required));
+
+                var members = discriminatedObjectType.Elements.Select(x => ToJsonSchemaRecursive(x.Value.Type));
+
+                var properties = writableProps.Select(x => new KeyValuePair<string, JsonNode?>(x.Key, ToJsonSchemaRecursive(x.Value.Type.Type)));
+                return new JsonObject
+                {
+                    ["type"] = "object",
+                    ["properties"] = new JsonObject(properties),
+                    ["required"] = new JsonArray([.. requiredProps.Select(x => JsonValue.Create(x.Key))]),
+                    ["oneOf"] = members.ToJsonArray(),
+                };
+            }
+            case AnyType _:
+                return new JsonObject();
             default:
-                // TODO discriminated object support
                 throw new NotImplementedException($"{type.GetType()}");
         }
     }

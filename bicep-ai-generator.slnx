@@ -1,5 +1,5 @@
 <Solution>
   <Folder Name="/src/">
-    <Project Path="src/BicepGenerator/BicepGenerator.csproj" />
+    <Project Path="src/BicepGeneratorMcp/BicepGeneratorMcp.csproj" />
   </Folder>
 </Solution>

@@ -1,0 +1,17 @@
+{
+  "inputs": [],
+  "servers": {
+    "Bicep Generator MCP": {
+      "type": "stdio",
+      "command": "dotnet",
+      "args": [
+        "run",
+        "--project",
+        "${workspaceFolder}/src/BicepGeneratorMcp"
+      ],
+      "env": {
+        "AZURE_OPENAI_ENDPOINT": "https://mcp-ai-test.openai.azure.com/"
+      }
+    }
+  }
+}
