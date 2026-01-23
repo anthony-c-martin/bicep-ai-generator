@@ -1,8 +1,10 @@
 using Azure.Bicep.Types.Az;
 using Azure.Core;
 using Azure.Identity;
+using Bicep.Core;
 using BicepGeneratorMcp;
 using BicepGeneratorMcp.Tools;
+using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -24,23 +26,34 @@ builder.Services
         DeploymentName: "gpt-4.1"))
     .AddSingleton<AiClientFactory>()
     .AddSingleton<AzTypeLoader>()
-    .AddMcpServer()
-    .WithStdioServerTransport()
-    .WithTools<BicepGeneratorTools>()
-    .AddCallToolFilter((next) => async (request, cancellationToken) =>
+    .AddSingleton<BicepCompiler>(BicepCompiler.Create());
+
+builder.Services
+    .AddAzureClients(clientBuilder =>
     {
-        try
-        {
-            return await next(request, cancellationToken);
-        }
-        catch (Exception ex)
-        {
-            return new CallToolResult
-            {
-                Content = [new TextContentBlock { Text = $"Error: {ex.Message}" }],
-                IsError = true
-            };
-        }
+        clientBuilder.AddArmClient("00000000-0000-0000-0000-000000000000");
+        clientBuilder.UseCredential(provider => provider.GetRequiredService<TokenCredential>());
     });
+
+builder.Services
+    .AddMcpServer()
+        .WithStdioServerTransport()
+        .WithTools<BicepGeneratorTools>()
+        .WithTools<BicepDeploymentTools>()
+        .AddCallToolFilter((next) => async (request, cancellationToken) =>
+        {
+            try
+            {
+                return await next(request, cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                return new CallToolResult
+                {
+                    Content = [new TextContentBlock { Text = $"Error: {ex.Message}" }],
+                    IsError = true
+                };
+            }
+        });
 
 await builder.Build().RunAsync();

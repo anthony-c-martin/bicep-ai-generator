@@ -26,8 +26,8 @@ Strongly prefer the following tools/commands as part of the workflow, instead of
 - `get_bicep_best_practices` MCP tool: learn current best practices before refactoring.
 - `get_bicep_file_diagnostics` MCP tool: compile/validate Bicep and address errors/warnings during edits.
 - `get_deployment_snapshot` MCP tool: predict deployment output; take “before” and “after” snapshots and compare.
+- `what_if_deployment` MCP tool: run a live diff against Azure using a `.bicepparam` file.
 - `az group export ...` CLI command: export the live resource group to bootstrap the initial template.
-- `az deployment group what-if ...` CLI command: run a live diff against Azure using the final `.bicepparam`.
 
 ## Workflow
 
@@ -80,7 +80,7 @@ This provides confidence that the code has been succesfully refactored without a
 
 ### 6) Validate Against Live Azure (What-If)
 
-- Once snapshots look equivalent, run `az deployment group what-if ...` using the `.bicepparam` file.
+- Once snapshots look equivalent, use the `what_if_deployment` MCP tool, using the `.bicepparam` file.
 - Review the **full** What-If output.
 - The target outcome is a **no-op**: no creates, no deletes, no updates.
 - If What-If reports changes, adjust templates/parameters until What-If is clean.
@@ -94,4 +94,4 @@ This provides confidence that the code has been succesfully refactored without a
 - A coherent set of `.bicep` files + a `.bicepparam` file exists for the target resource group.
 - The Bicep compiles cleanly (diagnostics show no errors; warnings are understood/acceptable).
 - “Before vs after” snapshots are equivalent (or differences are explicitly intentional and justified).
-- `az deployment group what-if` indicates the deployment would have **no impact** on live resources.
+- `what_if_deployment` indicates the deployment would have **no impact** on live resources.
