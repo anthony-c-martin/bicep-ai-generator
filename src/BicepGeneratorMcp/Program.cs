@@ -50,6 +50,8 @@ builder.Services
             }
             catch (Exception ex)
             {
+                Console.Error.WriteLine($"Error during tool call: {ex}");
+
                 return new CallToolResult
                 {
                     Content = [new TextContentBlock { Text = $"Error: {ex.Message}" }],

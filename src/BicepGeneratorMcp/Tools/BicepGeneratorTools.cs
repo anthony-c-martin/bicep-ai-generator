@@ -4,6 +4,7 @@ using System.Text.Json;
 using Azure.Bicep.Types;
 using Azure.Bicep.Types.Az;
 using Azure.Bicep.Types.Concrete;
+using BicepGeneratorMcp.Helpers;
 using ModelContextProtocol.Server;
 using OpenAI.Chat;
 
@@ -15,12 +16,41 @@ internal class BicepGeneratorTools(
 {
     private readonly Lazy<IReadOnlyDictionary<string, CrossFileTypeReference>> resourceIndexLazy = new(() => azTypeLoader.LoadTypeIndex().Resources.ToDictionary(StringComparer.OrdinalIgnoreCase));
 
+    private readonly GoldenDatasetHelper goldenDatasetHelper = new(aiClientFactory);
+
+    private async Task<string> GetSimilarExamplesPromptAsync(string promptDescription, string? resourceType, CancellationToken cancellationToken)
+    {
+        var examples = await goldenDatasetHelper.GetRelatedInfraSnapshotsAsync(promptDescription, cancellationToken);
+        var examplePromptSection = "";
+        foreach (var example in examples)
+        {
+            // Find example resources matching the requested resource type
+            var matchingResources = example.Snapshot.PredictedResources
+                .Where(x => resourceType == null || (x.TryGetPropertyValue("type", out var typeNode) && 
+                    typeNode?.GetValue<string>().Equals(resourceType, StringComparison.OrdinalIgnoreCase) == true))
+                .ToArray();
+
+            if (matchingResources.Length > 0)
+            {
+                examplePromptSection += $"""
+                Resource snapshot from infra file with description: "{example.Description}"
+                ```json
+                {JsonSerializer.Serialize(matchingResources, new JsonSerializerOptions { WriteIndented = true })}
+                ```
+
+                """;
+            }
+        }
+
+        return examplePromptSection;
+    }
+
     [McpServerTool]
     [Description("Generates a resource body configuration based on the Azure resource type, API version, JSON schema, example bodies, and a human-readable description of requirements.")]
     public async Task<string> GenerateResourceBodyAsync(
         [Description("The Azure resource type (e.g., 'Microsoft.KeyVault/vaults')")] string resourceType,
         [Description("The API version of the resource (e.g., '2024-11-01')")] string apiVersion,
-        [Description("Human-readable description of what the resource should do or contain")] string promptDescription,
+        [Description("Human-readable description of what the resource should do or contain")] string requirements,
         CancellationToken cancellationToken)
     {
         var chatClient = aiClientFactory.GetChatClient();
@@ -48,27 +78,7 @@ internal class BicepGeneratorTools(
         var schema = ResourceSchemaGenerator.ToJsonSchema(resourceTypeDef.Body.Type);
         var serializedSchema = JsonSerializer.Serialize(schema, new JsonSerializerOptions { WriteIndented = true });
 
-        var examples = await new GoldenDatasetTools(aiClientFactory).GetRelatedInfraExamplesAsync(promptDescription, cancellationToken);
-        var examplePromptSection = "";
-        foreach (var example in examples)
-        {
-            // Find example resources matching the requested resource type
-            var matchingResources = example.PredictedResources
-                .Where(x => x.TryGetPropertyValue("type", out var typeNode) && 
-                            typeNode?.GetValue<string>().Equals(resourceType, StringComparison.OrdinalIgnoreCase) == true)
-                .ToArray();
-
-            if (matchingResources.Length > 0)
-            {
-                examplePromptSection += $"""
-                Example taken from infra file with description: "{example.Description}"
-                ```json
-                {JsonSerializer.Serialize(matchingResources, new JsonSerializerOptions { WriteIndented = true })}
-                ```
-
-                """;
-            }
-        }
+        var examplePromptSection = await GetSimilarExamplesPromptAsync(requirements, resourceType, cancellationToken);
 
         var systemPrompt = $@"You are an expert Azure infrastructure architect specializing in creating resource configurations.
 
@@ -99,7 +109,7 @@ JSON Schema:
 ```
 
 Requirements:
-{promptDescription}
+{requirements}
 
 Similar examples:
 {examplePromptSection}
@@ -143,9 +153,12 @@ Generate the complete predicted resource body as JSON.";
     [McpServerTool]
     [Description("Generates a detailed Azure infrastructure architecture design document based on user requirements. Returns a comprehensive plan including overview, required resources, relationships, and configuration requirements.")]
     public async Task<string> GenerateInfrastructurePlanAsync(
-        [Description("Description of the Azure infrastructure requirements and business needs")] string requirements)
+        [Description("Description of the Azure infrastructure requirements and business needs")] string requirements,
+        CancellationToken cancellationToken)
     {
         var chatClient = aiClientFactory.GetChatClient();
+
+        var examplePromptSection = await GetSimilarExamplesPromptAsync(requirements, null, cancellationToken);
 
         var systemPrompt = @"You are an expert Azure architect specializing in infrastructure design.";
 
@@ -162,6 +175,9 @@ Create a comprehensive architecture design that includes:
 5. Any assumptions made
 
 If the requirements are too vague or missing critical information, respond with 'INSUFFICIENT_CONTEXT' followed by specific questions you need answered.
+
+Resource snapshots from similar examples:
+{examplePromptSection}
 
 Architecture Design:";
 

@@ -19,21 +19,15 @@ Generate a new, human-maintainable set of `.bicep` files plus a `.bicepparam` fi
 
 Strongly prefer the following tools/commands as part of the workflow, instead of finding other tools or CLI commands to call:
 
-- `get_related_infra_examples` MCP tool: fetch relevant example Bicep templates to understand common patterns for similar infrastructure.
 - `generate_infrastructure_plan` MCP tool: gather comprehensive requirements and generate a detailed architecture design.
 - `generate_resource_body` MCP tool: get properly configured resource definitions with security best practices applied.
 - `get_bicep_best_practices` MCP tool: learn current best practices before generating templates.
 - `get_bicep_file_diagnostics` MCP tool: compile/validate Bicep and address errors/warnings after generating files.
+- `what_if_deployment` MCP tool: run a live diff against Azure using a `.bicepparam` file.
 
 ## Workflow
 
-### 1) Fetch Example Infrastructure
-
-- Start by fetching relevant example infrastructure using the `get_related_infra_examples` MCP tool to understand common patterns.
-- This returns example Bicep templates that demonstrate best practices and common configurations for similar infrastructure.
-- Use these examples as reference for structure, naming conventions, and resource configurations.
-
-### 2) Plan the Architecture
+### 1) Plan the Architecture
 
 - Gather comprehensive requirements using the `generate_infrastructure_plan` MCP tool.
 - This returns:
@@ -43,13 +37,13 @@ Strongly prefer the following tools/commands as part of the workflow, instead of
   - Security and configuration requirements
 - Explain the proposed architecture to the user before proceeding.
 
-### 3) Generate Resource Configurations
+### 2) Generate Resource Configurations
 
 - For each resource in the plan, use the `generate_resource_body` MCP tool to get properly configured resource definitions.
 - This returns complete resource body JSON with security best practices applied.
 - Ensure all resources from the plan are accounted for.
 
-### 4) Create the Bicep Files
+### 3) Create the Bicep Files
 
 - Generate complete `.bicep` and `.bicepparam` files including:
   - Parameters with @description annotations for configurable values
@@ -61,11 +55,16 @@ Strongly prefer the following tools/commands as part of the workflow, instead of
 - Use a main entrypoint (for example `main.bicep`) and split resources into modules by domain if the infrastructure is complex.
 - Declare parameter values in the `.bicepparam` file, rather than using default values in the `.bicep` file parameter declarations.
 
-### 5) Validate the Templates
+### 4) Offline validation
 
 - After generating files, run `get_bicep_file_diagnostics` on the `.bicep` files.
 - Fix compilation errors immediately.
 - Review warnings and fix anything that could affect correctness, deployment behavior, or maintainability.
+
+### 5) Live validation
+
+- Run `what_if_deployment` on the `.bicepparam` file.
+- Verify the output matches your epxectations.
 
 ## Acceptance Criteria
 
