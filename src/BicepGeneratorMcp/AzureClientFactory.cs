@@ -6,7 +6,7 @@ using OpenAI.Chat;
 
 namespace BicepGeneratorMcp;
 
-public class AiClientFactory(Configuration configuration, TokenCredential credential)
+public class AzureClientFactory(Configuration configuration, TokenCredential credential)
 {
     public ChatClient GetChatClient()
     {

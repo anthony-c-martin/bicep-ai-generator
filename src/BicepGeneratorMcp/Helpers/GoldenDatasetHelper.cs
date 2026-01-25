@@ -9,7 +9,7 @@ using TemplateProcessor.Snapshots;
 
 namespace BicepGeneratorMcp.Helpers;
 
-internal class GoldenDatasetHelper(AiClientFactory aiClientFactory)
+internal class GoldenDatasetHelper(AzureClientFactory azureClientFactory)
 {
     public class SnapshotData
     {
@@ -32,7 +32,7 @@ internal class GoldenDatasetHelper(AiClientFactory aiClientFactory)
         [Description("The prompt describing the desired infrastructure")] string prompt,
         CancellationToken cancellationToken)
     {
-        var client = aiClientFactory.GetSearchClient();
+        var client = azureClientFactory.GetSearchClient();
 
         var response = await client.SearchAsync<SnapshotData>(new()
         {
@@ -44,7 +44,7 @@ internal class GoldenDatasetHelper(AiClientFactory aiClientFactory)
             }
         }, cancellationToken);
 
-        var containerClient = aiClientFactory.GetSnapshotContainerClient();
+        var containerClient = azureClientFactory.GetSnapshotContainerClient();
 
         ImmutableArray<SnapshotWithMetadata>.Builder results = ImmutableArray.CreateBuilder<SnapshotWithMetadata>();
         await foreach (var result in response.Value.GetResultsAsync())

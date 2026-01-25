@@ -12,11 +12,11 @@ namespace BicepGeneratorMcp.Tools;
 
 internal class BicepGeneratorTools(
     AzTypeLoader azTypeLoader,
-    AiClientFactory aiClientFactory)
+    AzureClientFactory azureClientFactory)
 {
     private readonly Lazy<IReadOnlyDictionary<string, CrossFileTypeReference>> resourceIndexLazy = new(() => azTypeLoader.LoadTypeIndex().Resources.ToDictionary(StringComparer.OrdinalIgnoreCase));
 
-    private readonly GoldenDatasetHelper goldenDatasetHelper = new(aiClientFactory);
+    private readonly GoldenDatasetHelper goldenDatasetHelper = new(azureClientFactory);
 
     private async Task<string> GetSimilarExamplesPromptAsync(string promptDescription, string? resourceType, CancellationToken cancellationToken)
     {
@@ -53,7 +53,7 @@ internal class BicepGeneratorTools(
         [Description("Human-readable description of what the resource should do or contain")] string requirements,
         CancellationToken cancellationToken)
     {
-        var chatClient = aiClientFactory.GetChatClient();
+        var chatClient = azureClientFactory.GetChatClient();
 
         ResourceType resourceTypeDef;
         if (resourceIndexLazy.Value.TryGetValue($"{resourceType}@{apiVersion}", out var found))
@@ -156,7 +156,7 @@ Generate the complete predicted resource body as JSON.";
         [Description("Description of the Azure infrastructure requirements and business needs")] string requirements,
         CancellationToken cancellationToken)
     {
-        var chatClient = aiClientFactory.GetChatClient();
+        var chatClient = azureClientFactory.GetChatClient();
 
         var examplePromptSection = await GetSimilarExamplesPromptAsync(requirements, null, cancellationToken);
 

@@ -25,7 +25,7 @@ builder.Services
         AzureSearchIndexName: "snapshots2",
         StorageAccountEndpoint: "https://mcpaitest.blob.core.windows.net",
         SnapshotContainerName: "snapshots"))
-    .AddSingleton<AiClientFactory>()
+    .AddSingleton<AzureClientFactory>()
     .AddSingleton<AzTypeLoader>()
     .AddSingleton<BicepCompiler>(BicepCompiler.Create());
 
@@ -41,7 +41,6 @@ builder.Services
         .WithStdioServerTransport()
         .WithTools<BicepGeneratorTools>()
         .WithTools<BicepDeploymentTools>()
-        .WithTools<GoldenDatasetTools>()
         .AddCallToolFilter((next) => async (request, cancellationToken) =>
         {
             try
