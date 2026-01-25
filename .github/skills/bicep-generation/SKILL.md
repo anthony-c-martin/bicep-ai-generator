@@ -3,65 +3,73 @@ name: bicep-generation
 description: Generate Azure Bicep infrastructure files using the Bicep Generator MCP tools. Use when creating Azure infrastructure as code, designing cloud architecture, or generating Bicep templates.
 ---
 
-# Bicep Infrastructure Generation
+# Skill Instructions
 
-Generate Azure Bicep infrastructure files by first planning the architecture, then generating resource configurations, and finally creating complete Bicep templates.
+## Goal
+
+Generate a new, human-maintainable set of `.bicep` files plus a `.bicepparam` file that deploys Azure infrastructure based on user requirements.
+
+## Guiding Principles
+
+- Optimize for maintainability and clarity: split into sensible modules, use descriptive names, and factor repeated patterns.
+- Prefer templates that look like they were written by a human, not auto-generated code.
+- Always start with example infrastructure and planning before generating resource configurations.
+
+## Required Tools / Commands
+
+Strongly prefer the following tools/commands as part of the workflow, instead of finding other tools or CLI commands to call:
+
+- `get_related_infra_examples` MCP tool: fetch relevant example Bicep templates to understand common patterns for similar infrastructure.
+- `generate_infrastructure_plan` MCP tool: gather comprehensive requirements and generate a detailed architecture design.
+- `generate_resource_body` MCP tool: get properly configured resource definitions with security best practices applied.
+- `get_bicep_best_practices` MCP tool: learn current best practices before generating templates.
+- `get_bicep_file_diagnostics` MCP tool: compile/validate Bicep and address errors/warnings after generating files.
 
 ## Workflow
 
-### 1. Plan the Architecture
+### 1) Fetch Example Infrastructure
 
-Always start by gathering comprehensive requirements using `mcp_bicepgenerato_generate_infrastructure_plan`:
+- Start by fetching relevant example infrastructure using the `get_related_infra_examples` MCP tool to understand common patterns.
+- This returns example Bicep templates that demonstrate best practices and common configurations for similar infrastructure.
+- Use these examples as reference for structure, naming conventions, and resource configurations.
 
-```
-mcp_bicepgenerato_generate_infrastructure_plan
-  requirements: "Create a web application with Azure App Service, Key Vault for secrets, and Application Insights for monitoring"
-```
+### 2) Plan the Architecture
 
-This returns:
-- Overview of the infrastructure design
-- Complete list of required resources with types and API versions
-- Resource relationships and dependencies
-- Security and configuration requirements
+- Gather comprehensive requirements using the `generate_infrastructure_plan` MCP tool.
+- This returns:
+  - Overview of the infrastructure design
+  - Complete list of required resources with types and API versions
+  - Resource relationships and dependencies
+  - Security and configuration requirements
+- Explain the proposed architecture to the user before proceeding.
 
-### 2. Generate Resource Configurations
+### 3) Generate Resource Configurations
 
-For each resource in the plan, use `mcp_bicepgenerato_generate_resource_body` to get properly configured resource definitions:
+- For each resource in the plan, use the `generate_resource_body` MCP tool to get properly configured resource definitions.
+- This returns complete resource body JSON with security best practices applied.
+- Ensure all resources from the plan are accounted for.
 
-```
-mcp_bicepgenerato_generate_resource_body
-  resourceType: "Microsoft.KeyVault/vaults"
-  apiVersion: "2023-07-01"
-  promptDescription: "Key Vault with soft delete, purge protection, and network restrictions following security best practices"
-```
+### 4) Create the Bicep Files
 
-Returns complete resource body JSON with security best practices applied.
+- Generate complete `.bicep` and `.bicepparam` files including:
+  - Parameters with @description annotations for configurable values
+  - Variables for computed values
+  - Resources converted from JSON to Bicep syntax
+  - Proper resource dependencies using Bicep references
+  - Outputs for important resource properties (IDs, endpoints, URLs)
+  - Comments documenting configuration decisions
+- Use a main entrypoint (for example `main.bicep`) and split resources into modules by domain if the infrastructure is complex.
+- Declare parameter values in the `.bicepparam` file, rather than using default values in the `.bicep` file parameter declarations.
 
-### 3. Create the Bicep File
+### 5) Validate the Templates
 
-Generate complete `.bicep` and `.bicepparam` files including:
-- Parameters with @description annotations for configurable values
-- Variables for computed values
-- Resources converted from JSON to Bicep syntax
-- Proper resource dependencies using Bicep references
-- Outputs for important resource properties (IDs, endpoints, URLs)
-- Comments documenting configuration decisions
+- After generating files, run `get_bicep_file_diagnostics` on the `.bicep` files.
+- Fix compilation errors immediately.
+- Review warnings and fix anything that could affect correctness, deployment behavior, or maintainability.
 
-## Example
+## Acceptance Criteria
 
-When asked to create infrastructure:
-
-1. Generate plan to understand full requirements
-2. Explain the proposed architecture to the user
-3. Generate resource bodies for each component
-4. Create main.bicep with all resources properly configured
-5. Validate all planned resources are included
-
-## Best Practices
-
-- Always use the infrastructure plan first - never skip to resource generation
-- Apply the security best practices included in generated resource bodies
-- Extract environment-specific values as parameters
-- Use current API versions from the plan
-- Document key configuration choices with comments
-- Ensure proper resource dependencies using Bicep syntax
+- A coherent set of `.bicep` files + a `.bicepparam` file exists for the requested infrastructure.
+- The Bicep compiles cleanly (diagnostics show no errors; warnings are understood/acceptable).
+- All resources from the infrastructure plan are included.
+- Security best practices from the generated resource bodies are applied.

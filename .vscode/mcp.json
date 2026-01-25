@@ -8,18 +8,6 @@
         "run",
         "--project",
         "${workspaceFolder}/src/BicepGeneratorMcp"
-      ],
-      "env": {
-        "AZURE_OPENAI_ENDPOINT": "https://mcp-ai-test.openai.azure.com/"
-      }
-    },
-    "Bicep": {
-      "type": "stdio",
-      "command": "dnx",
-      "args": [
-        "--source",
-        "${workspaceFolder}/packages",
-        "Bicep.McpServer@0.39.292-g8038cdc5e1"
       ]
     }
   }

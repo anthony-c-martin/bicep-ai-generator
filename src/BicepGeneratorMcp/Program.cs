@@ -10,9 +10,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using ModelContextProtocol.Protocol;
 
-var endpoint = Environment.GetEnvironmentVariable("AZURE_OPENAI_ENDPOINT")
-    ?? throw new InvalidOperationException("The AZURE_OPENAI_ENDPOINT environment variable is not set.");
-
 var builder = Host.CreateApplicationBuilder(args);
 
 // Configure all logs to go to stderr (stdout is used for the MCP protocol messages).
@@ -22,8 +19,12 @@ builder.Logging.AddConsole(o => o.LogToStandardErrorThreshold = LogLevel.Trace);
 builder.Services
     .AddSingleton<TokenCredential, DefaultAzureCredential>()
     .AddSingleton(new Configuration(
-        AzureOpenAIEndpoint: endpoint,
-        DeploymentName: "gpt-4.1"))
+        AzureOpenAIEndpoint: "https://mcp-ai-test.openai.azure.com/",
+        DeploymentName: "gpt-4.1",
+        AzureSearchEndpoint: "https://mcp-ai-test.search.windows.net",
+        AzureSearchIndexName: "snapshots2",
+        StorageAccountEndpoint: "https://mcpaitest.blob.core.windows.net",
+        SnapshotContainerName: "snapshots"))
     .AddSingleton<AiClientFactory>()
     .AddSingleton<AzTypeLoader>()
     .AddSingleton<BicepCompiler>(BicepCompiler.Create());
@@ -40,6 +41,7 @@ builder.Services
         .WithStdioServerTransport()
         .WithTools<BicepGeneratorTools>()
         .WithTools<BicepDeploymentTools>()
+        .WithTools<GoldenDatasetTools>()
         .AddCallToolFilter((next) => async (request, cancellationToken) =>
         {
             try

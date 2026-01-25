@@ -1,5 +1,6 @@
 <Solution>
   <Folder Name="/src/">
     <Project Path="src/BicepGeneratorMcp/BicepGeneratorMcp.csproj" />
+    <Project Path="src/TemplateProcessor/TemplateProcessor.csproj" />
   </Folder>
 </Solution>
