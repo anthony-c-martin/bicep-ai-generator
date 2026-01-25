@@ -1,7 +1,7 @@
 ﻿using Azure.Identity;
 using Azure.Storage.Blobs;
 using Bicep.RpcClient;
-using TemplateProcessor.Quickstarts;
+using TemplateProcessor.Processors;
 using TemplateProcessor.Snapshots;
 
 var cts = new CancellationTokenSource();
@@ -19,4 +19,7 @@ var credential = new DefaultAzureCredential();
 var containerClient = new BlobContainerClient(new Uri("https://mcpaitest.blob.core.windows.net/snapshots"), credential);
 
 var quickStartsPath = "/Users/ant/Code/azure-quickstart-templates";
-await QuickstartsProcessor.ProcessQuickstartAsync(quickStartsPath, new BlobSnapshotWriter(containerClient), cancellationToken);
+await QuickstartsProcessor.ProcessAsync(quickStartsPath, new BlobSnapshotWriter(containerClient), cancellationToken);
+
+var avmPath = "/Users/ant/Code/bicep-registry-modules";
+await AvmProcessor.ProcessAsync(avmPath, new BlobSnapshotWriter(containerClient), cancellationToken);

@@ -32,6 +32,6 @@ internal record SnapshotWithMetadata(
     string DisplayName,
     string Description,
     string Summary,
-    DateTime DateUpdated,
+    DateTime? DateUpdated,
     Snapshot Snapshot,
     ImmutableArray<string> ResourceTypes);

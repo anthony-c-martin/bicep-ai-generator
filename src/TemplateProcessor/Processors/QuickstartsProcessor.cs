@@ -4,9 +4,10 @@ using System.Text;
 using System.Text.Json;
 using Azure.Deployments.Templates.Engines;
 using Bicep.RpcClient;
+using TemplateProcessor.Processors.Quickstarts;
 using TemplateProcessor.Snapshots;
 
-namespace TemplateProcessor.Quickstarts;
+namespace TemplateProcessor.Processors;
 
 internal static class QuickstartsProcessor
 {
@@ -16,15 +17,15 @@ internal static class QuickstartsProcessor
         return new Guid(hash.AsSpan(0, 16));
     }
 
-    public static async Task ProcessQuickstartAsync(string quickstartFolderPath, ISnapshotWriter snapshotWriter, CancellationToken cancellationToken)
+    public static async Task ProcessAsync(string repoRootPath, ISnapshotWriter snapshotWriter, CancellationToken cancellationToken)
     {
         var clientFactory = new BicepClientFactory(new HttpClient());
         using var bicep = await clientFactory.DownloadAndInitialize(new(), cancellationToken);
 
-        foreach (var metadataPath in Directory.GetFiles(quickstartFolderPath, "metadata.json", SearchOption.AllDirectories))
+        foreach (var metadataPath in Directory.GetFiles(repoRootPath, "metadata.json", SearchOption.AllDirectories))
         {
             var metadataContents = await File.ReadAllTextAsync(metadataPath, cancellationToken);
-            var metadata = JsonSerializer.Deserialize(metadataContents, MetadataSerializationContext.FileSerializer.Metadata);
+            var metadata = JsonSerializer.Deserialize(metadataContents, MetadataSerializationContext.FileSerializer.Metadata)!;
 
             var parentDir = Path.GetDirectoryName(metadataPath)!;
 
@@ -88,11 +89,11 @@ internal static class QuickstartsProcessor
                     .Distinct(StringComparer.OrdinalIgnoreCase)
                     .ToImmutableArray();
 
-                var metadataUri = $"https://github.com/Azure/azure-quickstart-templates/blob/master/{Path.GetRelativePath(quickstartFolderPath, metadataPath).Replace('\\', '/')}";
+                var metadataUri = $"https://github.com/Azure/azure-quickstart-templates/blob/master/{Path.GetRelativePath(repoRootPath, metadataPath).Replace('\\', '/')}";
                 await snapshotWriter.WriteSnapshot(new(
                         Id: GenerateDeterministicGuid(metadataUri),
                         SourceUri: new Uri(metadataUri),
-                        DisplayName: metadata!.ItemDisplayName,
+                        DisplayName: metadata.ItemDisplayName,
                         Description: metadata.Description,
                         Summary: metadata.Summary,
                         DateUpdated: DateTime.Parse(metadata.DateUpdated),
