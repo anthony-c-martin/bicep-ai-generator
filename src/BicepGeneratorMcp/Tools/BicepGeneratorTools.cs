@@ -20,7 +20,8 @@ internal class BicepGeneratorTools(
     public async Task<string> GenerateResourceBodyAsync(
         [Description("The Azure resource type (e.g., 'Microsoft.KeyVault/vaults')")] string resourceType,
         [Description("The API version of the resource (e.g., '2024-11-01')")] string apiVersion,
-        [Description("Human-readable description of what the resource should do or contain")] string promptDescription)
+        [Description("Human-readable description of what the resource should do or contain")] string promptDescription,
+        CancellationToken cancellationToken)
     {
         var chatClient = aiClientFactory.GetChatClient();
 
@@ -46,6 +47,28 @@ internal class BicepGeneratorTools(
 
         var schema = ResourceSchemaGenerator.ToJsonSchema(resourceTypeDef.Body.Type);
         var serializedSchema = JsonSerializer.Serialize(schema, new JsonSerializerOptions { WriteIndented = true });
+
+        var examples = await new GoldenDatasetTools(aiClientFactory).GetRelatedInfraExamplesAsync(promptDescription, cancellationToken);
+        var examplePromptSection = "";
+        foreach (var example in examples)
+        {
+            // Find example resources matching the requested resource type
+            var matchingResources = example.PredictedResources
+                .Where(x => x.TryGetPropertyValue("type", out var typeNode) && 
+                            typeNode?.GetValue<string>().Equals(resourceType, StringComparison.OrdinalIgnoreCase) == true)
+                .ToArray();
+
+            if (matchingResources.Length > 0)
+            {
+                examplePromptSection += $"""
+                Example taken from infra file with description: "{example.Description}"
+                ```json
+                {JsonSerializer.Serialize(matchingResources, new JsonSerializerOptions { WriteIndented = true })}
+                ```
+
+                """;
+            }
+        }
 
         var systemPrompt = $@"You are an expert Azure infrastructure architect specializing in creating resource configurations.
 
@@ -78,7 +101,10 @@ JSON Schema:
 Requirements:
 {promptDescription}
 
-Generate the complete resource body as JSON:";
+Similar examples:
+{examplePromptSection}
+
+Generate the complete predicted resource body as JSON.";
 
         var messages = new List<ChatMessage>
         {

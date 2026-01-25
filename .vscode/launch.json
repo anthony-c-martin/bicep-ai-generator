@@ -1,0 +1,11 @@
+{
+    "version": "2.0.0",
+    "configurations": [
+        {
+            "name": "Attach",
+            "type": "coreclr",
+            "request": "attach",
+            "processId": "${command:pickProcess}"
+        }
+    ]
+}

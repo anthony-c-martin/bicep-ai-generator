@@ -1,6 +1,8 @@
+using System.Collections.Immutable;
 using System.ComponentModel;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 using Azure.Search.Documents.Models;
 using ModelContextProtocol.Server;
@@ -25,9 +27,19 @@ internal class GoldenDatasetTools(AiClientFactory aiClientFactory)
         public required string SourceUri { get; set; }
     }
 
+    public record GetRelatedInfraExamplesResult(
+        [Description("The display name of the example")]
+        string DisplayName,
+        [Description("The description of the example")]
+        string Description,
+        [Description("The source URI of the example")]
+        Uri SourceUri,
+        [Description("The expanded snapshot of resources in JSON format")]
+        ImmutableArray<JsonObject> PredictedResources);
+
     [McpServerTool]
     [Description("Searches for similar example Bicep infrastructure templates based on a natural language description. Returns relevant examples that can be used as reference for patterns, naming conventions, and resource configurations.")]
-    public async Task<string> GetRelatedInfraExamplesAsync(
+    public async Task<ImmutableArray<GetRelatedInfraExamplesResult>> GetRelatedInfraExamplesAsync(
         [Description("The prompt describing the desired infrastructure")] string prompt,
         CancellationToken cancellationToken)
     {
@@ -45,7 +57,7 @@ internal class GoldenDatasetTools(AiClientFactory aiClientFactory)
 
         var containerClient = aiClientFactory.GetSnapshotContainerClient();
 
-        StringBuilder output = new();
+        ImmutableArray<GetRelatedInfraExamplesResult>.Builder results = ImmutableArray.CreateBuilder<GetRelatedInfraExamplesResult>();
         await foreach (var result in response.Value.GetResultsAsync())
         {
             var blobClient = containerClient.GetBlobClient(result.Document.Id);
@@ -54,20 +66,13 @@ internal class GoldenDatasetTools(AiClientFactory aiClientFactory)
             var snapshotWithMetadata = JsonSerializer.Deserialize(content.Value.Content, SnapshotSerializationContext.FileSerializer.SnapshotWithMetadata)
                 ?? throw new InvalidOperationException("Failed to deserialize snapshot.");
 
-            output.Append($"""
-                ## {snapshotWithMetadata.DisplayName}"
-                {snapshotWithMetadata.Description}
-
-                Source: {snapshotWithMetadata.SourceUri}
-                
-                Snapshot:
-                ```json
-                {JsonSerializer.Serialize(snapshotWithMetadata.Snapshot, SnapshotSerializationContext.FileSerializer.Snapshot)}
-                ```
-
-                """);
+            results.Add(new GetRelatedInfraExamplesResult(
+                snapshotWithMetadata.DisplayName,
+                snapshotWithMetadata.Description,
+                snapshotWithMetadata.SourceUri,
+                snapshotWithMetadata.Snapshot.PredictedResources));
         }
 
-        return output.ToString();
+        return results.ToImmutable();
     }
 }
