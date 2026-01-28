@@ -17,9 +17,10 @@ using var bicep = await clientFactory.DownloadAndInitialize(new(), cancellationT
 
 var credential = new DefaultAzureCredential();
 var containerClient = new BlobContainerClient(new Uri("https://mcpaitest.blob.core.windows.net/snapshots"), credential);
+var snapshotWriter = new BlobSnapshotWriter(containerClient);
 
 var quickStartsPath = "/Users/ant/Code/azure-quickstart-templates";
-await QuickstartsProcessor.ProcessAsync(quickStartsPath, new BlobSnapshotWriter(containerClient), cancellationToken);
+await QuickstartsProcessor.ProcessAsync(quickStartsPath, snapshotWriter, cancellationToken);
 
 var avmPath = "/Users/ant/Code/bicep-registry-modules";
-await AvmProcessor.ProcessAsync(avmPath, new BlobSnapshotWriter(containerClient), cancellationToken);
+await AvmProcessor.ProcessAsync(avmPath, snapshotWriter, cancellationToken);

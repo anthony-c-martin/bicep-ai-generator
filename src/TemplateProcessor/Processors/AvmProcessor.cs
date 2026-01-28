@@ -4,7 +4,6 @@ using System.Text;
 using System.Text.Json;
 using Azure.Deployments.Templates.Engines;
 using Bicep.RpcClient;
-using TemplateProcessor.Processors.Quickstarts;
 using TemplateProcessor.Snapshots;
 
 namespace TemplateProcessor.Processors;
