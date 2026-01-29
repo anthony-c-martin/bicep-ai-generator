@@ -4,6 +4,7 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 using Azure.Search.Documents.Models;
+using Microsoft.WindowsAzure.ResourceStack.Common.Swagger.Validators;
 using ModelContextProtocol.Server;
 using TemplateProcessor.Snapshots;
 
@@ -28,7 +29,7 @@ internal class GoldenDatasetHelper(AzureClientFactory azureClientFactory)
 
     [McpServerTool]
     [Description("Searches for similar example Bicep infrastructure templates based on a natural language description. Returns relevant examples that can be used as reference for patterns, naming conventions, and resource configurations.")]
-    public async Task<ImmutableArray<SnapshotWithMetadata>> GetRelatedInfraSnapshotsAsync(
+    public async Task<ImmutableArray<(SnapshotWithMetadata result, double? score)>> GetRelatedInfraSnapshotsAsync(
         [Description("The prompt describing the desired infrastructure")] string prompt,
         CancellationToken cancellationToken)
     {
@@ -46,7 +47,7 @@ internal class GoldenDatasetHelper(AzureClientFactory azureClientFactory)
 
         var containerClient = azureClientFactory.GetSnapshotContainerClient();
 
-        ImmutableArray<SnapshotWithMetadata>.Builder results = ImmutableArray.CreateBuilder<SnapshotWithMetadata>();
+        List<(SnapshotWithMetadata result, double? score)> results = [];
         await foreach (var result in response.Value.GetResultsAsync())
         {
             var blobClient = containerClient.GetBlobClient(result.Document.Id);
@@ -55,9 +56,9 @@ internal class GoldenDatasetHelper(AzureClientFactory azureClientFactory)
             var snapshotWithMetadata = JsonSerializer.Deserialize(content.Value.Content, SnapshotSerializationContext.FileSerializer.SnapshotWithMetadata)
                 ?? throw new InvalidOperationException("Failed to deserialize snapshot.");
 
-            results.Add(snapshotWithMetadata);
+            results.Add((snapshotWithMetadata, result.Score));
         }
 
-        return results.ToImmutable();
+        return [.. results];
     }
 }

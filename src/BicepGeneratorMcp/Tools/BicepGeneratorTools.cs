@@ -1,6 +1,7 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using Azure.Bicep.Types;
 using Azure.Bicep.Types.Az;
 using Azure.Bicep.Types.Concrete;
@@ -18,11 +19,16 @@ internal class BicepGeneratorTools(
 
     private readonly GoldenDatasetHelper goldenDatasetHelper = new(azureClientFactory);
 
+    public record GenerateResourceBodyResult(
+        JsonObject Resource,
+        string? Notes);
+
     private async Task<string> GetSimilarExamplesPromptAsync(string promptDescription, string? resourceType, CancellationToken cancellationToken)
     {
-        var examples = await goldenDatasetHelper.GetRelatedInfraSnapshotsAsync(promptDescription, cancellationToken);
+        var results = await goldenDatasetHelper.GetRelatedInfraSnapshotsAsync(promptDescription, cancellationToken);
+        var exampleNumber = 1;
         var examplePromptSection = "";
-        foreach (var example in examples)
+        foreach (var (example, score) in results.OrderByDescending(x => x.score))
         {
             // Find example resources matching the requested resource type
             var matchingResources = example.Snapshot.PredictedResources
@@ -33,7 +39,10 @@ internal class BicepGeneratorTools(
             if (matchingResources.Length > 0)
             {
                 examplePromptSection += $"""
-                Resource snapshot from infra file with description: "{example.Description}"
+                Example {exampleNumber++}:
+                Relevance score: {score:F4}
+                Summary: "{example.Summary}"
+                Description: "{example.Description}"
                 ```json
                 {JsonSerializer.Serialize(matchingResources, new JsonSerializerOptions { WriteIndented = true })}
                 ```
@@ -47,7 +56,7 @@ internal class BicepGeneratorTools(
 
     [McpServerTool]
     [Description("Generates a resource body configuration based on the Azure resource type, API version, JSON schema, example bodies, and a human-readable description of requirements.")]
-    public async Task<string> GenerateResourceBodyAsync(
+    public async Task<GenerateResourceBodyResult> GenerateResourceBodyAsync(
         [Description("The Azure resource type (e.g., 'Microsoft.KeyVault/vaults')")] string resourceType,
         [Description("The API version of the resource (e.g., '2024-11-01')")] string apiVersion,
         [Description("Human-readable description of what the resource should do or contain")] string requirements,
@@ -122,13 +131,17 @@ JSON Schema (AUTHORITATIVE - only use properties defined here):
 Requirements:
 {requirements}
 
-Similar examples (for reference patterns only - verify properties exist in schema before using):
+Similar example resources, with a relevance score (number between 0 and 1) indicating how closely they match the original requirements (higher indicates a closer match). Use the relevance score to guide which examples to prioritize, and assess the summary + descriptions to determine what may be similar or different:
 {examplePromptSection}
 
 IMPORTANT: Before including ANY property, verify it exists in the JSON schema above. If a requirement cannot be met with the available schema properties, note this limitation rather than inventing properties.
 
-Generate the complete predicted resource body as JSON.
+Output the JSON resource body between tags <RESOURCE_BODY> and </RESOURCE_BODY> only. Do not use ``` at all.
+If there are additional notes that are relevant to return, output them between tags <NOTES> and </NOTES>.
+Avoid outputting comments in the JSON - use the notes section instead if notes are needed.
 """;
+
+        await Console.Error.WriteLineAsync($"{nameof(GenerateResourceBodyAsync)}: Prompt: {userPrompt}");
 
         var messages = new List<ChatMessage>
         {
@@ -139,29 +152,19 @@ Generate the complete predicted resource body as JSON.
         var options = new ChatCompletionOptions
         {
             Temperature = 0.3f, // Lower temperature for more consistent outputs
-            MaxOutputTokenCount = 4000
+            MaxOutputTokenCount = 4000,
         };
 
         var completion = await chatClient.CompleteChatAsync(messages, options);
         var response = completion.Value.Content[0].Text;
 
-        // Clean up the response - remove markdown code fences if present
-        response = response.Trim();
-        if (response.StartsWith("```json"))
-        {
-            response = response[7..];
-        }
-        else if (response.StartsWith("```"))
-        {
-            response = response[3..];
-        }
-        
-        if (response.EndsWith("```"))
-        {
-            response = response[..^3];
-        }
+        var json = TextHelper.ExtractBetweenTags(response, "RESOURCE_BODY");
+        var notes = TextHelper.TryExtractBetweenTags(response, "NOTES");
 
-        return response.Trim();
+        var resource = JsonSerializer.Deserialize<JsonObject>(json)
+            ?? throw new InvalidOperationException("Generated resource body is not valid JSON.");
+
+        return new(resource, notes);
     }
 
     [McpServerTool]
@@ -199,6 +202,8 @@ Resource snapshots from similar examples:
 {examplePromptSection}
 
 Architecture Design:";
+
+        await Console.Error.WriteLineAsync($"{nameof(GenerateInfrastructurePlanAsync)}: Prompt: {userPrompt}");
 
         var messages = new List<ChatMessage>
         {

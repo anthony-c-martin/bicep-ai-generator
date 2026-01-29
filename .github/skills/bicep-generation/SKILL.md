@@ -64,7 +64,8 @@ Strongly prefer the following tools/commands as part of the workflow, instead of
 ### 5) Live validation
 
 - Run `what_if_deployment` on the `.bicepparam` file.
-- Verify the output matches your epxectations.
+- Make sure you know which subscriptionId and resourceGroup to use before calling this tool - ask the user for input if you don't have this context.
+- Verify the output matches your expectations.
 
 ## Acceptance Criteria
 
