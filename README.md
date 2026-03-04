@@ -15,6 +15,8 @@ This project includes specialized AI skills for working with Azure Bicep infrast
 
 Generate Azure Bicep infrastructure files from scratch using AI-powered planning and resource generation.
 
+https://github.com/user-attachments/assets/05a5d931-0d42-40fc-99e9-c05bce6c8cf0
+
 **Use when you need to:**
 - Create new Azure infrastructure as code
 - Design cloud architecture with best practices
