@@ -19,8 +19,8 @@ internal static class QuickstartsProcessor
 
     public static async Task ProcessAsync(string repoRootPath, ISnapshotWriter snapshotWriter, CancellationToken cancellationToken)
     {
-        var clientFactory = new BicepClientFactory(new HttpClient());
-        using var bicep = await clientFactory.DownloadAndInitialize(new(), cancellationToken);
+        var clientFactory = new BicepClientFactory();
+        using var bicep = await clientFactory.Initialize(new(), cancellationToken);
 
         foreach (var metadataPath in Directory.GetFiles(repoRootPath, "metadata.json", SearchOption.AllDirectories))
         {

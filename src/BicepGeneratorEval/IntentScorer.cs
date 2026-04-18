@@ -37,7 +37,7 @@ public class IntentScorer
             User intent: {prompt}
             Resource type: {resourceType}
             Generated resource body:
-            {resourceBody.ToJsonString(new System.Text.Json.JsonSerializerOptions { WriteIndented = true })}
+            {JsonHelper.SerializeIndented(resourceBody)}
             """;
 
         var messages = new List<ChatMessage>

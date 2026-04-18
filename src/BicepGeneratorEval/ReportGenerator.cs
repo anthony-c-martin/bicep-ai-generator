@@ -93,6 +93,15 @@ public static class ReportGenerator
                 sb.AppendLine("```");
             }
 
+            // Tool notes
+            if (r.Notes is not null)
+            {
+                sb.AppendLine();
+                sb.AppendLine("**Notes:**");
+                sb.AppendLine();
+                sb.AppendLine(r.Notes);
+            }
+
             sb.AppendLine();
         }
 

@@ -26,8 +26,8 @@ internal static class AvmProcessor
 
     public static async Task ProcessAsync(string repoRootPath, ISnapshotWriter snapshotWriter, CancellationToken cancellationToken)
     {
-        var clientFactory = new BicepClientFactory(new HttpClient());
-        using var bicep = await clientFactory.DownloadAndInitialize(new(), cancellationToken);
+        var clientFactory = new BicepClientFactory();
+        using var bicep = await clientFactory.Initialize(new(), cancellationToken);
 
         foreach (var readmePath in Directory.GetFiles(Path.Combine(repoRootPath, "avm/res"), "README.md", SearchOption.AllDirectories))
         {

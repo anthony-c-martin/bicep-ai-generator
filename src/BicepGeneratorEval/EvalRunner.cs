@@ -187,6 +187,6 @@ public class EvalRunner
             totalScore,
             errorMessage,
             notes,
-            resourceBody?.ToJsonString(new JsonSerializerOptions { WriteIndented = true }));
+            JsonHelper.SerializeIndented(resourceBody));
     }
 }

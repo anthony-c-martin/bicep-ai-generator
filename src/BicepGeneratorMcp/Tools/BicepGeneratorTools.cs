@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using Azure.Bicep.Types;
@@ -15,6 +16,12 @@ internal class BicepGeneratorTools(
     AzTypeLoader azTypeLoader,
     AzureClientFactory azureClientFactory)
 {
+    private static readonly JsonSerializerOptions IndentedJsonOptions = new()
+    {
+        WriteIndented = true,
+        Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+    };
+
     private readonly Lazy<IReadOnlyDictionary<string, CrossFileTypeReference>> resourceIndexLazy = new(() => azTypeLoader.LoadTypeIndex().Resources.ToDictionary(StringComparer.OrdinalIgnoreCase));
 
     private readonly GoldenDatasetHelper goldenDatasetHelper = new(azureClientFactory);
@@ -44,7 +51,7 @@ internal class BicepGeneratorTools(
                 Summary: "{example.Summary}"
                 Description: "{example.Description}"
                 ```json
-                {JsonSerializer.Serialize(matchingResources, new JsonSerializerOptions { WriteIndented = true })}
+                {JsonSerializer.Serialize(matchingResources, IndentedJsonOptions)}
                 ```
 
                 """;
@@ -85,7 +92,7 @@ internal class BicepGeneratorTools(
         }
 
         var schema = ResourceSchemaGenerator.ToJsonSchema(resourceTypeDef.Body.Type);
-        var serializedSchema = JsonSerializer.Serialize(schema, new JsonSerializerOptions { WriteIndented = true });
+        var serializedSchema = JsonSerializer.Serialize(schema, IndentedJsonOptions);
 
         var examplePromptSection = await GetSimilarExamplesPromptAsync(requirements, resourceType, cancellationToken);
 
@@ -98,23 +105,25 @@ Your task is to generate a valid JSON resource body for an Azure resource based 
 - Example resource bodies for reference
 - A human-readable description of the requirements
 
-CRITICAL RULES - FOLLOW EXACTLY:
-1. ONLY use properties that exist in the provided JSON schema. Do NOT invent or hallucinate properties.
-2. If a requested feature is not available in the schema, DO NOT include it. Instead, add a comment explaining the limitation.
-3. The JSON schema is the authoritative source of truth for what properties are valid.
-4. Example bodies are for reference patterns only - verify any property from examples exists in the schema before using it.
-5. If a capability cannot be achieved with the available schema properties, state this clearly rather than making up properties.
+When generating the resource body, ensure that:
+- The critical rules below are adhered to
+- The intent from the requirements is accurately expressed in the configuration
+- Security best-practices for the specified resource type are followed where applicable
 
-Generate a complete, valid JSON resource body that:
-1. Conforms STRICTLY to the provided JSON schema - no exceptions
-2. Follows patterns from the example bodies (only for properties that exist in the schema)
-3. Meets the requirements in the description (only using schema-valid properties)
-4. Uses realistic and appropriate values
-5. Includes all required properties from the schema
-6. Follows Azure best practices
+CRITICAL RULES - FOLLOW EXACTLY:
+- ONLY use properties that exist in the provided JSON schema. Do NOT invent or hallucinate properties.
+- If a requested feature is not available in the schema, DO NOT include it. Instead, add an explanation of the limitation to the notes.
+- The JSON schema is the authoritative source of truth for what properties are valid.
+- Example bodies are for reference patterns only - verify any property from examples exists in the schema before using it.
 
 Return ONLY the JSON resource body, with no additional explanation or markdown formatting.
-If a requested feature cannot be configured via this resource type, return the JSON body along with a brief comment explaining what is not possible.
+
+If you cannot meet the original user requirements in a way that fits with the above rules, do not return the body, and explain the problem in notes.
+
+To format the output:
+- If the resource body can be generated, return it as JSON between tags <RESOURCE_BODY> and </RESOURCE_BODY>. Do not use ``` at all.
+- If there are important notes or explanations, return them as a bulleted list between tags <NOTES> and </NOTES>.
+- Do not output comments in the JSON - use the notes section instead if notes are needed.
 """;
 
         var userPrompt = $"""
@@ -123,7 +132,7 @@ Generate a resource body for the following Azure resource:
 Resource Type: {resourceType}
 API Version: {apiVersion}
 
-JSON Schema (AUTHORITATIVE - only use properties defined here):
+JSON Schema:
 ```json
 {serializedSchema}
 ```
@@ -133,12 +142,6 @@ Requirements:
 
 Similar example resources, with a relevance score (number between 0 and 1) indicating how closely they match the original requirements (higher indicates a closer match). Use the relevance score to guide which examples to prioritize, and assess the summary + descriptions to determine what may be similar or different:
 {examplePromptSection}
-
-IMPORTANT: Before including ANY property, verify it exists in the JSON schema above. If a requirement cannot be met with the available schema properties, note this limitation rather than inventing properties.
-
-Output the JSON resource body between tags <RESOURCE_BODY> and </RESOURCE_BODY> only. Do not use ``` at all.
-If there are additional notes that are relevant to return, output them between tags <NOTES> and </NOTES>.
-Avoid outputting comments in the JSON - use the notes section instead if notes are needed.
 """;
 
         await Console.Error.WriteLineAsync($"{nameof(GenerateResourceBodyAsync)}: Prompt: {userPrompt}");

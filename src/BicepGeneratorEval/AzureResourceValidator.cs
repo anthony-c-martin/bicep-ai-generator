@@ -99,8 +99,6 @@ public class AzureResourceValidator
 
     private static string FormatRequestFailedError(Azure.RequestFailedException ex)
     {
-        var options = new JsonSerializerOptions { WriteIndented = true };
-
         if (ex.GetRawResponse()?.Content is { } content)
         {
             try
@@ -117,11 +115,11 @@ public class AzureResourceValidator
                         code.GetString() == "PreflightValidationCheckFailed" &&
                         first.TryGetProperty("details", out var innerDetails))
                     {
-                        return JsonSerializer.Serialize(innerDetails, options);
+                        return JsonHelper.SerializeIndented(innerDetails);
                     }
                 }
 
-                return JsonSerializer.Serialize(json, options);
+                return JsonHelper.SerializeIndented(json);
             }
             catch { }
         }
