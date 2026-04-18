@@ -1,0 +1,602 @@
+[
+  {
+    "id": 1,
+    "resourceType": "Microsoft.KeyVault/vaults",
+    "apiVersion": "2023-07-01",
+    "prompt": "Create a Key Vault with soft delete enabled, purge protection, and RBAC authorization in East US."
+  },
+  {
+    "id": 2,
+    "resourceType": "Microsoft.Storage/storageAccounts",
+    "apiVersion": "2023-05-01",
+    "prompt": "Create a StorageV2 account with LRS replication, HTTPS-only traffic, and TLS 1.2 minimum in West Europe."
+  },
+  {
+    "id": 3,
+    "resourceType": "Microsoft.Web/sites",
+    "apiVersion": "2023-12-01",
+    "prompt": "Create a Linux web app running Node.js 20 LTS with system-assigned managed identity and always-on enabled."
+  },
+  {
+    "id": 4,
+    "resourceType": "Microsoft.Sql/servers",
+    "apiVersion": "2023-08-01-preview",
+    "prompt": "Create a SQL Server with Azure AD-only authentication and a specific admin group object ID."
+  },
+  {
+    "id": 5,
+    "resourceType": "Microsoft.Sql/servers/databases",
+    "apiVersion": "2023-08-01-preview",
+    "prompt": "Create a SQL Database with Standard S1 SKU, zone redundancy, and 35-day backup retention."
+  },
+  {
+    "id": 6,
+    "resourceType": "Microsoft.Network/virtualNetworks",
+    "apiVersion": "2024-01-01",
+    "prompt": "Create a VNet with address space 10.0.0.0/16 and two subnets: 'web' (10.0.1.0/24) and 'data' (10.0.2.0/24)."
+  },
+  {
+    "id": 7,
+    "resourceType": "Microsoft.Network/networkSecurityGroups",
+    "apiVersion": "2024-01-01",
+    "prompt": "Create an NSG that allows inbound HTTPS (443) from the internet and denies all other inbound traffic."
+  },
+  {
+    "id": 8,
+    "resourceType": "Microsoft.ContainerRegistry/registries",
+    "apiVersion": "2023-11-01-preview",
+    "prompt": "Create a Premium SKU container registry with admin user disabled, zone redundancy, and geo-replication to West Europe."
+  },
+  {
+    "id": 9,
+    "resourceType": "Microsoft.ContainerService/managedClusters",
+    "apiVersion": "2024-02-01",
+    "prompt": "Create an AKS cluster with a system node pool of 3 Standard_D4s_v3 VMs, Azure CNI networking, and managed identity."
+  },
+  {
+    "id": 10,
+    "resourceType": "Microsoft.Compute/virtualMachines",
+    "apiVersion": "2024-03-01",
+    "prompt": "Create a Windows Server 2022 VM with Standard_D2s_v5 size, a managed OS disk, and boot diagnostics enabled."
+  },
+  {
+    "id": 11,
+    "resourceType": "Microsoft.DocumentDB/databaseAccounts",
+    "apiVersion": "2024-02-15-preview",
+    "prompt": "Create a Cosmos DB account with SQL API, strong consistency, and multi-region writes across East US and West US."
+  },
+  {
+    "id": 12,
+    "resourceType": "Microsoft.ServiceBus/namespaces",
+    "apiVersion": "2022-10-01-preview",
+    "prompt": "Create a Service Bus namespace with Premium SKU, 2 messaging units, and zone redundancy."
+  },
+  {
+    "id": 13,
+    "resourceType": "Microsoft.EventHub/namespaces",
+    "apiVersion": "2024-01-01",
+    "prompt": "Create an Event Hub namespace with Standard tier, 4 throughput units, and auto-inflate up to 10."
+  },
+  {
+    "id": 14,
+    "resourceType": "Microsoft.Cache/redis",
+    "apiVersion": "2024-03-01",
+    "prompt": "Create a Premium P1 Redis Cache with 2 replicas, clustering with 3 shards, and non-SSL port disabled."
+  },
+  {
+    "id": 15,
+    "resourceType": "Microsoft.CognitiveServices/accounts",
+    "apiVersion": "2024-04-01-preview",
+    "prompt": "Create an Azure OpenAI account with S0 SKU in East US with a custom subdomain name."
+  },
+  {
+    "id": 16,
+    "resourceType": "Microsoft.Network/applicationGateways",
+    "apiVersion": "2024-01-01",
+    "prompt": "Create an Application Gateway v2 with WAF enabled, Standard_v2 SKU, and autoscaling from 1 to 10 instances."
+  },
+  {
+    "id": 17,
+    "resourceType": "Microsoft.Network/loadBalancers",
+    "apiVersion": "2024-01-01",
+    "prompt": "Create a Standard SKU public load balancer with a frontend IP, backend pool, and an HTTP health probe on port 80."
+  },
+  {
+    "id": 18,
+    "resourceType": "Microsoft.Network/publicIPAddresses",
+    "apiVersion": "2024-01-01",
+    "prompt": "Create a Standard SKU static public IP address with a DNS label in East US 2."
+  },
+  {
+    "id": 19,
+    "resourceType": "Microsoft.OperationalInsights/workspaces",
+    "apiVersion": "2023-09-01",
+    "prompt": "Create a Log Analytics workspace with 90-day retention and PerGB2018 pricing tier."
+  },
+  {
+    "id": 20,
+    "resourceType": "Microsoft.Insights/components",
+    "apiVersion": "2020-02-02",
+    "prompt": "Create an Application Insights resource with web application type linked to a Log Analytics workspace."
+  },
+  {
+    "id": 21,
+    "resourceType": "Microsoft.ManagedIdentity/userAssignedIdentities",
+    "apiVersion": "2023-01-31",
+    "prompt": "Create a user-assigned managed identity in East US."
+  },
+  {
+    "id": 22,
+    "resourceType": "Microsoft.Web/serverfarms",
+    "apiVersion": "2023-12-01",
+    "prompt": "Create a Linux App Service Plan with P1v3 SKU and zone redundancy enabled."
+  },
+  {
+    "id": 23,
+    "resourceType": "Microsoft.Network/privateDnsZones",
+    "apiVersion": "2020-06-01",
+    "prompt": "Create a private DNS zone for 'privatelink.blob.core.windows.net'."
+  },
+  {
+    "id": 24,
+    "resourceType": "Microsoft.Network/privateEndpoints",
+    "apiVersion": "2024-01-01",
+    "prompt": "Create a private endpoint for a storage account blob service connected to a specific subnet."
+  },
+  {
+    "id": 25,
+    "resourceType": "Microsoft.Storage/storageAccounts/blobServices/containers",
+    "apiVersion": "2023-05-01",
+    "prompt": "Create a blob container named 'data' with private access level."
+  },
+  {
+    "id": 26,
+    "resourceType": "Microsoft.Network/bastionHosts",
+    "apiVersion": "2024-01-01",
+    "prompt": "Create a Standard SKU Azure Bastion host connected to a Bastion subnet with native client support enabled."
+  },
+  {
+    "id": 27,
+    "resourceType": "Microsoft.Compute/disks",
+    "apiVersion": "2024-03-02",
+    "prompt": "Create a 256 GB Premium SSD managed disk with zone redundancy in availability zone 1."
+  },
+  {
+    "id": 28,
+    "resourceType": "Microsoft.Compute/virtualMachineScaleSets",
+    "apiVersion": "2024-03-01",
+    "prompt": "Create a VMSS with Ubuntu 22.04, Standard_D2s_v5, flexible orchestration, and autoscaling from 2 to 10 instances."
+  },
+  {
+    "id": 29,
+    "resourceType": "Microsoft.Network/firewalls",
+    "apiVersion": "2024-01-01",
+    "prompt": "Create a Standard SKU Azure Firewall with threat intelligence in alert mode."
+  },
+  {
+    "id": 30,
+    "resourceType": "Microsoft.Network/firewallPolicies",
+    "apiVersion": "2024-01-01",
+    "prompt": "Create a firewall policy with Premium tier, TLS inspection enabled, and IDPS in alert and deny mode."
+  },
+  {
+    "id": 31,
+    "resourceType": "Microsoft.ApiManagement/service",
+    "apiVersion": "2023-09-01-preview",
+    "prompt": "Create an API Management instance with Developer SKU, a publisher email, and virtual network integration in internal mode."
+  },
+  {
+    "id": 32,
+    "resourceType": "Microsoft.App/managedEnvironments",
+    "apiVersion": "2024-03-01",
+    "prompt": "Create a Container Apps environment with consumption workload profile linked to a Log Analytics workspace."
+  },
+  {
+    "id": 33,
+    "resourceType": "Microsoft.App/containerApps",
+    "apiVersion": "2024-03-01",
+    "prompt": "Create a Container App running nginx:latest with 0.5 CPU, 1Gi memory, external ingress on port 80, and min 1 / max 5 replicas."
+  },
+  {
+    "id": 34,
+    "resourceType": "Microsoft.SignalRService/signalR",
+    "apiVersion": "2024-03-01",
+    "prompt": "Create a SignalR Service with Standard tier, 1 unit, and serverless service mode."
+  },
+  {
+    "id": 35,
+    "resourceType": "Microsoft.EventGrid/topics",
+    "apiVersion": "2024-06-01-preview",
+    "prompt": "Create an Event Grid topic with schema type CloudEventSchemaV1_0 and system-assigned identity."
+  },
+  {
+    "id": 36,
+    "resourceType": "Microsoft.KeyVault/vaults/secrets",
+    "apiVersion": "2023-07-01",
+    "prompt": "Create a Key Vault secret with a specific value and a content type of 'text/plain'."
+  },
+  {
+    "id": 37,
+    "resourceType": "Microsoft.Authorization/roleAssignments",
+    "apiVersion": "2022-04-01",
+    "prompt": "Create a role assignment granting Storage Blob Data Contributor role to a specific principal ID."
+  },
+  {
+    "id": 38,
+    "resourceType": "Microsoft.Network/networkInterfaces",
+    "apiVersion": "2024-01-01",
+    "prompt": "Create a network interface with a dynamic private IP in a specific subnet and an associated public IP."
+  },
+  {
+    "id": 39,
+    "resourceType": "Microsoft.Compute/availabilitySets",
+    "apiVersion": "2024-03-01",
+    "prompt": "Create an availability set with 3 fault domains, 5 update domains, and aligned SKU."
+  },
+  {
+    "id": 40,
+    "resourceType": "Microsoft.Logic/workflows",
+    "apiVersion": "2019-05-01",
+    "prompt": "Create a Logic App with a consumption plan and a basic HTTP trigger workflow definition."
+  },
+  {
+    "id": 41,
+    "resourceType": "Microsoft.Web/sites",
+    "apiVersion": "2023-12-01",
+    "prompt": "Create an Azure Function App running .NET 8 isolated on a Linux consumption plan with Application Insights."
+  },
+  {
+    "id": 42,
+    "resourceType": "Microsoft.Cdn/profiles",
+    "apiVersion": "2024-02-01",
+    "prompt": "Create an Azure Front Door Standard profile."
+  },
+  {
+    "id": 43,
+    "resourceType": "Microsoft.DBforPostgreSQL/flexibleServers",
+    "apiVersion": "2023-12-01-preview",
+    "prompt": "Create a PostgreSQL flexible server with Burstable B1ms SKU, 32GB storage, and high availability with zone redundancy."
+  },
+  {
+    "id": 44,
+    "resourceType": "Microsoft.DBforMySQL/flexibleServers",
+    "apiVersion": "2023-12-30",
+    "prompt": "Create a MySQL flexible server with General Purpose D2ds_v4 SKU, 64GB storage, and SSL enforcement."
+  },
+  {
+    "id": 45,
+    "resourceType": "Microsoft.Network/virtualNetworkGateways",
+    "apiVersion": "2024-01-01",
+    "prompt": "Create a VPN Gateway with VpnGw2 SKU, route-based VPN type, and active-active configuration."
+  },
+  {
+    "id": 46,
+    "resourceType": "Microsoft.Network/expressRouteCircuits",
+    "apiVersion": "2024-01-01",
+    "prompt": "Create an ExpressRoute circuit with 200 Mbps bandwidth using Equinix as the service provider in Washington DC."
+  },
+  {
+    "id": 47,
+    "resourceType": "Microsoft.Batch/batchAccounts",
+    "apiVersion": "2024-02-01",
+    "prompt": "Create a Batch account with user-subscription pool allocation mode linked to a Key Vault."
+  },
+  {
+    "id": 48,
+    "resourceType": "Microsoft.Search/searchServices",
+    "apiVersion": "2024-03-01-preview",
+    "prompt": "Create an AI Search service with Standard SKU, 2 replicas, and 1 partition."
+  },
+  {
+    "id": 49,
+    "resourceType": "Microsoft.DataFactory/factories",
+    "apiVersion": "2018-06-01",
+    "prompt": "Create a Data Factory with system-assigned managed identity and Git configuration for Azure DevOps."
+  },
+  {
+    "id": 50,
+    "resourceType": "Microsoft.Synapse/workspaces",
+    "apiVersion": "2021-06-01",
+    "prompt": "Create a Synapse workspace with managed resource group, ADLS Gen2 default storage, and double encryption."
+  },
+  {
+    "id": 51,
+    "resourceType": "Microsoft.MachineLearningServices/workspaces",
+    "apiVersion": "2024-04-01",
+    "prompt": "Create a Machine Learning workspace linked to a storage account, Key Vault, Application Insights, and container registry."
+  },
+  {
+    "id": 52,
+    "resourceType": "Microsoft.Network/routeTables",
+    "apiVersion": "2024-01-01",
+    "prompt": "Create a route table with a default route (0.0.0.0/0) pointing to a virtual appliance IP and BGP route propagation disabled."
+  },
+  {
+    "id": 53,
+    "resourceType": "Microsoft.Network/natGateways",
+    "apiVersion": "2024-01-01",
+    "prompt": "Create a NAT Gateway with Standard SKU, 10 minute idle timeout, and an associated public IP."
+  },
+  {
+    "id": 54,
+    "resourceType": "Microsoft.Storage/storageAccounts",
+    "apiVersion": "2023-05-01",
+    "prompt": "Create a storage account with hierarchical namespace enabled (ADLS Gen2), ZRS, and firewall default deny."
+  },
+  {
+    "id": 55,
+    "resourceType": "Microsoft.Network/dnsZones",
+    "apiVersion": "2018-05-01",
+    "prompt": "Create a public DNS zone for 'contoso.com'."
+  },
+  {
+    "id": 56,
+    "resourceType": "Microsoft.ServiceBus/namespaces/queues",
+    "apiVersion": "2022-10-01-preview",
+    "prompt": "Create a Service Bus queue with dead lettering enabled, 5-minute lock duration, and max delivery count of 10."
+  },
+  {
+    "id": 57,
+    "resourceType": "Microsoft.ServiceBus/namespaces/topics",
+    "apiVersion": "2022-10-01-preview",
+    "prompt": "Create a Service Bus topic with 1GB max size, duplicate detection with a 10-minute window, and partitioning enabled."
+  },
+  {
+    "id": 58,
+    "resourceType": "Microsoft.EventHub/namespaces/eventhubs",
+    "apiVersion": "2024-01-01",
+    "prompt": "Create an Event Hub with 8 partitions, 7-day message retention, and capture to Azure Blob Storage."
+  },
+  {
+    "id": 59,
+    "resourceType": "Microsoft.KeyVault/vaults/keys",
+    "apiVersion": "2023-07-01",
+    "prompt": "Create a Key Vault key of type RSA with 2048 key size and encrypt/decrypt operations enabled."
+  },
+  {
+    "id": 60,
+    "resourceType": "Microsoft.Compute/galleries",
+    "apiVersion": "2023-07-03",
+    "prompt": "Create a Shared Image Gallery with a description for storing custom VM images."
+  },
+  {
+    "id": 61,
+    "resourceType": "Microsoft.ContainerInstance/containerGroups",
+    "apiVersion": "2023-05-01",
+    "prompt": "Create a container group running a single Linux container with 1 CPU, 1.5GB memory, and a public IP on port 8080."
+  },
+  {
+    "id": 62,
+    "resourceType": "Microsoft.Network/applicationSecurityGroups",
+    "apiVersion": "2024-01-01",
+    "prompt": "Create an application security group in East US for grouping web tier VMs."
+  },
+  {
+    "id": 63,
+    "resourceType": "Microsoft.Insights/actionGroups",
+    "apiVersion": "2023-01-01",
+    "prompt": "Create an action group with an email receiver for alerts and an Azure Function receiver."
+  },
+  {
+    "id": 64,
+    "resourceType": "Microsoft.Insights/metricAlerts",
+    "apiVersion": "2018-03-01",
+    "prompt": "Create a metric alert that triggers when CPU percentage exceeds 90% on a VM with a 5-minute evaluation frequency."
+  },
+  {
+    "id": 65,
+    "resourceType": "Microsoft.Authorization/policyAssignments",
+    "apiVersion": "2024-04-01",
+    "prompt": "Create a policy assignment enforcing 'Allowed locations' with East US and West US as allowed."
+  },
+  {
+    "id": 66,
+    "resourceType": "Microsoft.Cdn/profiles/endpoints",
+    "apiVersion": "2024-02-01",
+    "prompt": "Create a CDN endpoint with origin pointing to a storage account static website with HTTPS redirect."
+  },
+  {
+    "id": 67,
+    "resourceType": "Microsoft.RecoveryServices/vaults",
+    "apiVersion": "2024-04-01",
+    "prompt": "Create a Recovery Services vault with geo-redundant storage and cross-region restore enabled."
+  },
+  {
+    "id": 68,
+    "resourceType": "Microsoft.Network/trafficManagerProfiles",
+    "apiVersion": "2022-04-01",
+    "prompt": "Create a Traffic Manager profile with weighted routing method, 30-second probing interval, and HTTP monitoring on port 80."
+  },
+  {
+    "id": 69,
+    "resourceType": "Microsoft.Compute/sshPublicKeys",
+    "apiVersion": "2024-03-01",
+    "prompt": "Create an SSH public key resource with a specific RSA public key value."
+  },
+  {
+    "id": 70,
+    "resourceType": "Microsoft.Storage/storageAccounts/fileServices/shares",
+    "apiVersion": "2023-05-01",
+    "prompt": "Create a file share named 'appdata' with 100 GiB quota and Hot access tier."
+  },
+  {
+    "id": 71,
+    "resourceType": "Microsoft.Network/virtualNetworks/subnets",
+    "apiVersion": "2024-01-01",
+    "prompt": "Create a subnet with address prefix 10.0.3.0/24 with service endpoints for Microsoft.Storage and Microsoft.Sql."
+  },
+  {
+    "id": 72,
+    "resourceType": "Microsoft.Automation/automationAccounts",
+    "apiVersion": "2023-11-01",
+    "prompt": "Create an Automation account with system-assigned managed identity and Basic SKU."
+  },
+  {
+    "id": 73,
+    "resourceType": "Microsoft.Network/frontDoors",
+    "apiVersion": "2021-06-01",
+    "prompt": "Create a Front Door (classic) with a single backend pool pointing to a web app and session affinity enabled."
+  },
+  {
+    "id": 74,
+    "resourceType": "Microsoft.Web/staticSites",
+    "apiVersion": "2023-12-01",
+    "prompt": "Create a Static Web App with Standard SKU connected to a GitHub repository."
+  },
+  {
+    "id": 75,
+    "resourceType": "Microsoft.Network/ddosProtectionPlans",
+    "apiVersion": "2024-01-01",
+    "prompt": "Create a DDoS Protection Plan in East US."
+  },
+  {
+    "id": 76,
+    "resourceType": "Microsoft.Sql/servers/firewallRules",
+    "apiVersion": "2023-08-01-preview",
+    "prompt": "Create a SQL Server firewall rule allowing access from Azure services (0.0.0.0 to 0.0.0.0)."
+  },
+  {
+    "id": 77,
+    "resourceType": "Microsoft.Storage/storageAccounts/tableServices/tables",
+    "apiVersion": "2023-05-01",
+    "prompt": "Create a Table Storage table named 'telemetry'."
+  },
+  {
+    "id": 78,
+    "resourceType": "Microsoft.Storage/storageAccounts/queueServices/queues",
+    "apiVersion": "2023-05-01",
+    "prompt": "Create a storage queue named 'processing-tasks'."
+  },
+  {
+    "id": 79,
+    "resourceType": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases",
+    "apiVersion": "2024-02-15-preview",
+    "prompt": "Create a Cosmos DB SQL database named 'appdb' with 400 RU/s manual throughput."
+  },
+  {
+    "id": 80,
+    "resourceType": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers",
+    "apiVersion": "2024-02-15-preview",
+    "prompt": "Create a Cosmos DB container with '/tenantId' partition key, unique key on '/email', and 30-day TTL."
+  },
+  {
+    "id": 81,
+    "resourceType": "Microsoft.Network/ipGroups",
+    "apiVersion": "2024-01-01",
+    "prompt": "Create an IP Group containing the CIDR ranges 10.0.0.0/16 and 192.168.0.0/24."
+  },
+  {
+    "id": 82,
+    "resourceType": "Microsoft.Compute/proximityPlacementGroups",
+    "apiVersion": "2024-03-01",
+    "prompt": "Create a proximity placement group with Standard type in West US 2."
+  },
+  {
+    "id": 83,
+    "resourceType": "Microsoft.Compute/snapshots",
+    "apiVersion": "2024-03-02",
+    "prompt": "Create a disk snapshot from an existing managed disk with incremental snapshot enabled."
+  },
+  {
+    "id": 84,
+    "resourceType": "Microsoft.Compute/images",
+    "apiVersion": "2024-03-01",
+    "prompt": "Create a custom VM image from a VHD blob URI with Linux OS type and V2 hyper-V generation."
+  },
+  {
+    "id": 85,
+    "resourceType": "Microsoft.Network/virtualHubs",
+    "apiVersion": "2024-01-01",
+    "prompt": "Create a Virtual Hub with address prefix 10.1.0.0/24 associated with a Virtual WAN."
+  },
+  {
+    "id": 86,
+    "resourceType": "Microsoft.Network/virtualWans",
+    "apiVersion": "2024-01-01",
+    "prompt": "Create a Virtual WAN with Standard type and branch-to-branch traffic allowed."
+  },
+  {
+    "id": 87,
+    "resourceType": "Microsoft.Purview/accounts",
+    "apiVersion": "2021-12-01",
+    "prompt": "Create a Microsoft Purview account with system-assigned managed identity and public network access enabled."
+  },
+  {
+    "id": 88,
+    "resourceType": "Microsoft.Network/vpnSites",
+    "apiVersion": "2024-01-01",
+    "prompt": "Create a VPN site with device IP 203.0.113.1, BGP ASN 65010, and link speed 100 Mbps."
+  },
+  {
+    "id": 89,
+    "resourceType": "Microsoft.HealthcareApis/workspaces",
+    "apiVersion": "2024-03-31",
+    "prompt": "Create a Healthcare APIs workspace in East US."
+  },
+  {
+    "id": 90,
+    "resourceType": "Microsoft.Maps/accounts",
+    "apiVersion": "2024-01-01-preview",
+    "prompt": "Create an Azure Maps account with Gen2 pricing tier and CORS enabled for all origins."
+  },
+  {
+    "id": 91,
+    "resourceType": "Microsoft.Network/privateLinkServices",
+    "apiVersion": "2024-01-01",
+    "prompt": "Create a Private Link Service attached to a Standard Load Balancer frontend with auto-approval for specific subscriptions."
+  },
+  {
+    "id": 92,
+    "resourceType": "Microsoft.Maintenance/maintenanceConfigurations",
+    "apiVersion": "2023-10-01-preview",
+    "prompt": "Create a maintenance configuration with InGuestPatch scope and a weekly recurrence on Sundays at 2:00 AM UTC."
+  },
+  {
+    "id": 93,
+    "resourceType": "Microsoft.Network/connections",
+    "apiVersion": "2024-01-01",
+    "prompt": "Create a site-to-site VPN connection with IPsec type, shared key, and DPD timeout of 45 seconds."
+  },
+  {
+    "id": 94,
+    "resourceType": "Microsoft.ContainerService/managedClusters",
+    "apiVersion": "2024-02-01",
+    "prompt": "Create an AKS cluster with Azure RBAC enabled, Calico network policy, and a private cluster with API server authorized IP ranges."
+  },
+  {
+    "id": 95,
+    "resourceType": "Microsoft.Web/sites/config",
+    "apiVersion": "2023-12-01",
+    "prompt": "Create web app configuration with minimum TLS 1.2, HTTP 2.0 enabled, and 64-bit platform."
+  },
+  {
+    "id": 96,
+    "resourceType": "Microsoft.DBforPostgreSQL/flexibleServers/databases",
+    "apiVersion": "2023-12-01-preview",
+    "prompt": "Create a PostgreSQL database named 'appdb' with UTF-8 charset and en_US.utf8 collation."
+  },
+  {
+    "id": 97,
+    "resourceType": "Microsoft.Monitor/pipelineGroups",
+    "apiVersion": "2023-10-01-preview",
+    "prompt": "Create an Azure Monitor pipeline group for centralized log collection from multiple sources."
+  },
+  {
+    "id": 98,
+    "resourceType": "Microsoft.Dashboard/grafana",
+    "apiVersion": "2023-09-01",
+    "prompt": "Create an Azure Managed Grafana instance with Standard plan and deterministic outbound IP enabled."
+  },
+  {
+    "id": 99,
+    "resourceType": "Microsoft.Network/publicIPPrefixes",
+    "apiVersion": "2024-01-01",
+    "prompt": "Create a public IP prefix with /28 prefix length (16 IPs) and Standard SKU."
+  },
+  {
+    "id": 100,
+    "resourceType": "Microsoft.Kusto/clusters",
+    "apiVersion": "2023-08-15",
+    "prompt": "Create an Azure Data Explorer cluster with Standard_E8as_v5+1TB_PS SKU, 2 instances, and streaming ingestion enabled."
+  }
+]

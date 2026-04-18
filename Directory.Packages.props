@@ -1,0 +1,25 @@
+<Project>
+
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageVersion Include="Azure.AI.OpenAI" Version="2.1.0" />
+    <PackageVersion Include="Azure.Bicep.Core" Version="0.42.1" />
+    <PackageVersion Include="Azure.Bicep.RpcClient" Version="0.42.1" />
+    <PackageVersion Include="Azure.Bicep.Types.Az" Version="0.2.850" />
+    <PackageVersion Include="Azure.Deployments.Templates" Version="1.590.0" />
+    <PackageVersion Include="Azure.Identity" Version="1.17.1" />
+    <PackageVersion Include="Azure.ResourceManager.Resources" Version="1.11.2" />
+    <PackageVersion Include="Azure.Search.Documents" Version="11.7.0" />
+    <PackageVersion Include="Azure.Storage.Blobs" Version="12.27.0" />
+    <PackageVersion Include="Microsoft.Extensions.Azure" Version="1.13.1" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting" Version="10.0.0" />
+    <PackageVersion Include="ModelContextProtocol" Version="0.4.0-preview.3" />
+    <PackageVersion Include="System.CommandLine" Version="2.0.5" />
+    <PackageVersion Include="System.Security.Cryptography.Xml" Version="8.0.3" />
+  </ItemGroup>
+
+</Project>

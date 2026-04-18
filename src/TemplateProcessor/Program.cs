@@ -12,8 +12,8 @@ Console.CancelKeyPress += (_, e) => {
 
 var cancellationToken = cts.Token;
 
-var clientFactory = new BicepClientFactory(new HttpClient());
-using var bicep = await clientFactory.DownloadAndInitialize(new(), cancellationToken);
+var clientFactory = new BicepClientFactory();
+using var bicep = await clientFactory.Initialize(new(), cancellationToken);
 
 var credential = new DefaultAzureCredential();
 var containerClient = new BlobContainerClient(new Uri("https://mcpaitest.blob.core.windows.net/snapshots"), credential);

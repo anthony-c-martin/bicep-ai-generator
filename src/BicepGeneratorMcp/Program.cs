@@ -49,7 +49,7 @@ builder.Services
             }
             catch (Exception ex)
             {
-                Console.Error.WriteLine($"Error during tool call: {ex}");
+                await Console.Error.WriteLineAsync($"Error during tool call: {ex}");
 
                 return new CallToolResult
                 {
